@@ -1,4 +1,4 @@
-import { middleWareRequest } from "../../types";
+import { middleWareRequest } from "../types";
 import { Response, NextFunction } from "express";
 import jwt, { VerifyErrors } from "jsonwebtoken";
 
@@ -24,7 +24,6 @@ export const verifyRole = (role: "admin" | "user") => {
             if (decoded.role != role)
               return res.status(403).json({ msg: "access denied!" });
             next();
-
           } else {
             return res.status(401).json({ msg: "unauthorized!" });
           }

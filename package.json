@@ -10,7 +10,7 @@
     "build":"tsc",
     "generate": "npx drizzle-kit generate",
     "migrate": "npx drizzle-kit migrate",
-    "start:prod":"node ./dist/index.js",
+    "start:prod":"node ./dist/src/index.js",
     "build:prod":"npm install --omit:dev && tsc"
   },
   "keywords": [],

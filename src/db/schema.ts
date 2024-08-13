@@ -8,6 +8,8 @@ import {
   boolean,
   index,
   primaryKey,
+  real,
+  timestamp,
 } from "drizzle-orm/pg-core";
 
 export const usersTable = pgTable("users", {
@@ -34,8 +36,8 @@ export const booksTable = pgTable(
     name: varchar("name", { length: 50 }).notNull().unique(),
     stock: integer("stock").notNull().default(0),
     cover: text("cover"),
-    type: varchar("type", { length: 50 }).notNull(),
     authorId: integer("authorId").references(() => authorsTable.id),
+    price: real("price").notNull().default(0),
   },
   (table) => ({
     indexTable: index().on(table.name),
@@ -51,9 +53,10 @@ export const usersBooksTable = pgTable(
     bookId: integer("bookId")
       .notNull()
       .references(() => booksTable.id),
+    createdAt: timestamp("createdAt").defaultNow(),
   },
   (table) => ({
-    pk: primaryKey({ columns: [table.userId, table.bookId] }),
+    pk: primaryKey({ columns: [table.userId, table.bookId,table.createdAt] }),
   })
 );
 

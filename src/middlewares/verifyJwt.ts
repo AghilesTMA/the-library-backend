@@ -1,6 +1,6 @@
 import { NextFunction, Response } from "express";
-import jwt, {  JwtPayload, VerifyErrors } from "jsonwebtoken";
-import { middleWareRequest } from "../../types";
+import jwt, { JwtPayload, VerifyErrors } from "jsonwebtoken";
+import { middleWareRequest } from "../types";
 
 export const verifyJwt = async (
   req: middleWareRequest,
