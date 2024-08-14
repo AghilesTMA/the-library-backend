@@ -101,7 +101,7 @@ export const deleteBookById = async (req: Request, res: Response) => {
 
 export const buyBook = async (req: middleWareRequest, res: Response) => {
   try {
-    const { bookId, paymentInfo } = req.body;
+    const { bookId, amount, paymentInfo } = req.body;
 
     if (!bookId || !paymentInfo)
       return res.status(400).json({ msg: "All fields are required" });
@@ -113,8 +113,8 @@ export const buyBook = async (req: middleWareRequest, res: Response) => {
 
     if (available.length == 0)
       return res.status(404).json({ msg: "No such book with this id" });
-    if (available[0].stock == 0)
-      return res.status(400).json({ msg: "We ran out of this book!" });
+    if (available[0].stock < amount)
+      return res.status(400).json({ msg: "Not enought amount of this boook" });
 
     //payment logic:
     //....
@@ -123,13 +123,13 @@ export const buyBook = async (req: middleWareRequest, res: Response) => {
     const { updatedBook, transaction } = await db.transaction(async (trx) => {
       const updatedBook = await trx
         .update(booksTable)
-        .set({ stock: available[0].stock - 1 })
+        .set({ stock: available[0].stock - amount })
         .where(eq(booksTable.id, bookId))
         .returning();
 
       const transaction = await trx
         .insert(usersBooksTable)
-        .values({ userId: req.id!, bookId })
+        .values({ userId: req.id!, bookId, amount })
         .returning();
 
       return { updatedBook, transaction };
@@ -139,7 +139,7 @@ export const buyBook = async (req: middleWareRequest, res: Response) => {
       msg: "Payment affected successfully!",
       data: {
         purchasedBook: updatedBook,
-        transactionId: JSON.stringify(transaction),
+        transactionId: transaction,
       },
     });
   } catch (error) {
@@ -154,7 +154,12 @@ export const getPurchasedBooks = async (
 ) => {
   try {
     const purchases = await db
-      .select({ books: booksTable, id: usersBooksTable.userId })
+      .select({
+        books: booksTable,
+        id: usersBooksTable.userId,
+        amount: usersBooksTable.amount,
+        time: usersBooksTable.createdAt,
+      })
       .from(usersBooksTable)
       .where(eq(usersBooksTable.userId, req.id!))
       .fullJoin(booksTable, eq(usersBooksTable.bookId, booksTable.id));

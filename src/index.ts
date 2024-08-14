@@ -5,7 +5,6 @@ import cors from "cors";
 import Credentials from "./middlewares/credentials";
 import cookieParser from "cookie-parser";
 import authRouter from "./routes/authRouter";
-import { verifyJwt } from "./middlewares/verifyJwt";
 import { booksRouter } from "./routes/booksRouter";
 import { whiteList } from "./config";
 
@@ -18,7 +17,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 //routes
-app.get("/", verifyJwt, (_: any, res: Response) => {
+app.get("/",async (_: any, res: Response) => {
   return res.status(200).json({ msg: "hello there!" });
 });
 app.use("/api/auth", authRouter);

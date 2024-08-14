@@ -53,10 +53,13 @@ export const usersBooksTable = pgTable(
     bookId: integer("bookId")
       .notNull()
       .references(() => booksTable.id),
+    amount: integer("amount").notNull(),
     createdAt: timestamp("createdAt").defaultNow(),
   },
   (table) => ({
-    pk: primaryKey({ columns: [table.userId, table.bookId,table.createdAt] }),
+    pk: primaryKey({
+      columns: [table.userId, table.bookId, table.createdAt, table.amount],
+    }),
   })
 );
 
