@@ -1,6 +1,5 @@
 import express from "express";
 import "dotenv/config";
-import { Response } from "express";
 import cors from "cors";
 import Credentials from "./middlewares/credentials";
 import cookieParser from "cookie-parser";
