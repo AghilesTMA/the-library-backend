@@ -3,6 +3,7 @@ import { db } from "../db";
 import { authorsTable, booksTable, usersBooksTable } from "../db/schema";
 import { eq, sql } from "drizzle-orm";
 import { middleWareRequest } from "../types";
+import { toNum } from "../utils/fun";
 
 export const createBook = async (req: Request, res: Response) => {
   try {
@@ -174,11 +175,3 @@ export const getPurchasedBooks = async (
   }
 };
 
-const isString = (input: any): input is string => {
-  return typeof input == "string";
-};
-
-const toNum = (input: any): number | null => {
-  if (isString(input)) return parseInt(input);
-  return null;
-};
