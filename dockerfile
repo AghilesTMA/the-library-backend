@@ -1,7 +1,5 @@
 FROM node:18.20.4-alpine AS build
 
-ENV NODE_EN=production
-
 WORKDIR /app
 
 COPY package*.json ./
@@ -17,6 +15,8 @@ RUN npx tsc
 FROM node:18.20.4-alpine
 
 WORKDIR /app
+
+ENV NODE_ENV=production
 
 COPY --from=build /app/dist ./dist
 
